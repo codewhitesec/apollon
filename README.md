@@ -107,38 +107,38 @@ In this README, we only provide an overview of possible detection methods:
   The following listing shows how this can be achieved for *auditd* by applying an adjustment to the
   *auditd unit file*:
 
-  ```systemd
-  [Service]
-  Type=forking
-  PIDFile=/run/auditd.pid
-  ExecStart=/sbin/auditd
-  ExecStartPost=-/sbin/augenrules --load
-  # The following line monitors write access to /proc/pid/mem of auditd
-  ExecStartPost=/bin/bash -c "auditctl -w /proc/$(cat /run/auditd.pid)/mem -p wa -k process-injection"
-  ```
+    ```systemd
+    [Service]
+    Type=forking
+    PIDFile=/run/auditd.pid
+    ExecStart=/sbin/auditd
+    ExecStartPost=-/sbin/augenrules --load
+    # The following line monitors write access to /proc/pid/mem of auditd
+    ExecStartPost=/bin/bash -c "auditctl -w /proc/$(cat /run/auditd.pid)/mem -p wa -k process-injection"
+    ```
 
 2. Monitor the *auditd* daemon for error messages. Simply clearing the netlink output
   buffer as done by *apollon* causes error messages as shown below:
 
-  ```
-  Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
-  Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
-  Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
-  Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
-  ```
+    ```
+    Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
+    Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
+    Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
+    Jul 31 13:25:02 auditd auditd[427]: Netlink message from kernel was not OK
+    ```
 
 3. Look for missing event IDs in *auditd* logs. If certain event IDs are skipped, this
   may indicate tampering. The listing below shows an *auditd* log where one event was
   dropped by *apollon*:
 
-  ```
-  type=SYSCALL msg=audit(1690788664.304:980): arch=c000003e syscall=257 success=yes exit=3 a0=ffffff9c a1=7ffe5e584772 a2=0 a3=0 items=1 ppid=1022 pid=1226 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=4294967295 comm="cat" exe="/usr/bin/cat" key="etcpasswd"ARCH=x86_64 SYSCALL=openat AUID="unset" UID="root" GID="root" EUID="root" SUID="root" FSUID="root" EGID="root" SGID="root" FSGID="root"
-  type=PATH msg=audit(1690788664.304:980): item=0 name="/etc/shadow" inode=270575 dev=ca:03 mode=0100000 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0OUID="root" OGID="root"
-  type=PROCTITLE msg=audit(1690788664.304:980): proctitle=636174002F6574632F736861646F77
-  type=SYSCALL msg=audit(1690788671.579:982): arch=c000003e syscall=257 success=yes exit=3 a0=ffffff9c a1=7ffc22a71772 a2=0 a3=0 items=1 ppid=1022 pid=1228 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=4294967295 comm="cat" exe="/usr/bin/cat" key="etcpasswd"ARCH=x86_64 SYSCALL=openat AUID="unset" UID="root" GID="root" EUID="root" SUID="root" FSUID="root" EGID="root" SGID="root" FSGID="root"
-  type=PATH msg=audit(1690788671.579:982): item=0 name="/etc/shadow" inode=270575 dev=ca:03 mode=0100000 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0OUID="root" OGID="root"
-  type=PROCTITLE msg=audit(1690788671.579:982): proctitle=636174002F6574632F736861646F77
-  ```
+    ```
+    type=SYSCALL msg=audit(1690788664.304:980): arch=c000003e syscall=257 success=yes exit=3 a0=ffffff9c a1=7ffe5e584772 a2=0 a3=0 items=1 ppid=1022 pid=1226 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=4294967295 comm="cat" exe="/usr/bin/cat" key="etcpasswd"ARCH=x86_64 SYSCALL=openat AUID="unset" UID="root" GID="root" EUID="root" SUID="root" FSUID="root" EGID="root" SGID="root" FSGID="root"
+    type=PATH msg=audit(1690788664.304:980): item=0 name="/etc/shadow" inode=270575 dev=ca:03 mode=0100000 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0OUID="root" OGID="root"
+    type=PROCTITLE msg=audit(1690788664.304:980): proctitle=636174002F6574632F736861646F77
+    type=SYSCALL msg=audit(1690788671.579:982): arch=c000003e syscall=257 success=yes exit=3 a0=ffffff9c a1=7ffc22a71772 a2=0 a3=0 items=1 ppid=1022 pid=1228 auid=4294967295 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts1 ses=4294967295 comm="cat" exe="/usr/bin/cat" key="etcpasswd"ARCH=x86_64 SYSCALL=openat AUID="unset" UID="root" GID="root" EUID="root" SUID="root" FSUID="root" EGID="root" SGID="root" FSGID="root"
+    type=PATH msg=audit(1690788671.579:982): item=0 name="/etc/shadow" inode=270575 dev=ca:03 mode=0100000 ouid=0 ogid=0 rdev=00:00 nametype=NORMAL cap_fp=0 cap_fi=0 cap_fe=0 cap_fver=0 cap_frootid=0OUID="root" OGID="root"
+    type=PROCTITLE msg=audit(1690788671.579:982): proctitle=636174002F6574632F736861646F77
+    ```
 
 4. If possible, restrict *ptrace* permissions e.g. by using a *Linux Security Module*.
   [Yama](https://www.kernel.org/doc/html/v4.15/admin-guide/LSM/Yama.html) represents
