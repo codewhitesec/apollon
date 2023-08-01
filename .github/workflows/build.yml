@@ -5,10 +5,16 @@ on:
     branches:
       - main
       - develop
+    paths:
+      - src/**
+      - include/**
   pull_request:
     branches:
       - main
       - develop
+    paths:
+      - src/**
+      - include/**
 
 jobs:
   build:
