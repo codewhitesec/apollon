@@ -34,4 +34,4 @@ utils.o: src/utils.c include/utils.h
 	$(CC_x64) -c $< -o $@ $(OPTIONS)
 
 clean:
-	rm dist/* -f *.o *.bin include/shellcode.h
+	rm -f dist/* *.o *.bin include/shellcode.h
