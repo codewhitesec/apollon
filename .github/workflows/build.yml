@@ -9,6 +9,8 @@ on:
       - src/**
       - include/**
       - Makefile
+      - .github/workflows/build.yml
+
   pull_request:
     branches:
       - main
@@ -17,6 +19,7 @@ on:
       - src/**
       - include/**
       - Makefile
+      - .github/workflows/build.yml
 
 jobs:
   build:
@@ -33,3 +36,9 @@ jobs:
 
       - name: make
         run: make
+
+      - name: Archive compiled executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: apollon-master
+          path: dist/*
