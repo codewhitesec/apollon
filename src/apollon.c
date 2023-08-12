@@ -1,3 +1,6 @@
+#include <unistd.h>
+#include <string.h>
+
 #include "../include/utils.h"
 #include "../include/procmem.h"
 #include "../include/shellcode.h"
