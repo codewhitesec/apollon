@@ -1,6 +1,6 @@
 CC_x64 := gcc
 STRIP := strip
-OPTIONS := -O3 -I include -w -ldl
+OPTIONS := -O3 -I include -ldl
 OBJECTS := procmem.o utils.o
 
 all: apollon-all-x64 apollon-selective-x64

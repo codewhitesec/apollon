@@ -1,5 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "../include/utils.h"
 #include "../include/procmem.h"
